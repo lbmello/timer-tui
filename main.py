@@ -25,7 +25,6 @@ class Timer:
     def lap(self):
         self.laps.append(self.get_time())
 
-
     def get_time(self):
         total = self.elapsed
         if self.running:
@@ -69,10 +68,10 @@ class DualTimerApp(App):
 
 
         with Horizontal(id="controls"):
-            yield Button("T1 Start/Stop", id="t1-toggle")
-            yield Button("T1 Lap", id="t1-lap")
-            yield Button("T2 Start/Stop", id="t2-toggle")
-            yield Button("T2 Lap", id="t2-lap")
+            yield Button("Work Start/Stop", id="t1-toggle")
+            yield Button("Work Lap", id="t1-lap")
+            yield Button("Personal Start/Stop", id="t2-toggle")
+            yield Button("Personal Lap", id="t2-lap")
 
         yield Footer()
 
@@ -82,6 +81,7 @@ class DualTimerApp(App):
         self.timer2 = Timer()
 
         self.figlet = Figlet(font="starwars")
+        self.theme = "dracula"
 
         self.set_interval(1, self.update_times)
 
@@ -107,8 +107,19 @@ class DualTimerApp(App):
             self._ascii_time("Personal", self.timer2.get_time())
         )
 
-        self.timer1_laps.update("\n".join(self.timer1.laps[-5:]) or "No laps")
-        self.timer2_laps.update("\n".join(self.timer2.laps[-5:]) or "No laps")
+        self.timer1_laps.update(
+            "\n".join(
+                f"Lap {i+1}: {t} | Elapsed: {t}"
+                for i, t in enumerate(self.timer1.laps)
+            ) or "No laps"
+        )
+
+        self.timer2_laps.update(
+            "\n".join(
+                f"Lap {i+1}: {t} | Elapsed: {t}"
+                for i, t in enumerate(self.timer2.laps)
+            ) or "No laps"
+        )
 
         self.timer1_lap_count_display.update(f'Total: {str(len(self.timer1.laps))}' or "0 laps")
         self.timer2_lap_count_display.update(f'Total: {str(len(self.timer2.laps))}' or "0 laps")

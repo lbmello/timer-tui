@@ -1,9 +1,12 @@
 Screen {
     layout: horizontal;
+    align: center middle;
+
 }
 
 #body {
-    width: 100%;
+    width: auto;
+    height: auto;
 }
 
 #timer1-box, #timer2-box {
@@ -26,14 +29,14 @@ Screen {
 }
 
 #lap-count {
+    height: 2;
     width: 1fr;
-    padding: 10;
     align: center middle; 
 }
 
 /* LAPS */
 #timer1-laps, #timer2-laps {
-    height: 8;
+    height: 12;
     padding: 1;
     color: white;
     align: center middle;
