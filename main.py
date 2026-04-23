@@ -1,6 +1,9 @@
-
-import curses
+from textual.app import App, ComposeResult
+from textual.containers import Horizontal, Vertical
+from textual.widgets import Button, Static, Header, Footer
 import time
+from pyfiglet import Figlet
+
 
 class Timer:
     def __init__(self):
@@ -8,6 +11,7 @@ class Timer:
         self.start_time = 0
         self.elapsed = 0
         self.laps = []
+
 
     def toggle(self):
         if self.running:
@@ -17,8 +21,10 @@ class Timer:
             self.start_time = time.time()
             self.running = True
 
+
     def lap(self):
         self.laps.append(self.get_time())
+
 
     def get_time(self):
         total = self.elapsed
@@ -32,54 +38,94 @@ class Timer:
         return f"{h:02}:{m:02}:{s:02}"
 
 
-def draw_timer(stdscr, y, timer, title):
-    stdscr.addstr(y, 2, title, curses.A_BOLD)
-    stdscr.addstr(y + 1, 4, f"Time: {timer.get_time()}")
-    stdscr.addstr(y + 2, 4, f"Status: {'Running' if timer.running else 'Stopped'}")
-
-    stdscr.addstr(y + 3, 4, "Laps:")
-    for i, lap in enumerate(timer.laps[-5:], 1):
-        stdscr.addstr(y + 3 + i, 6, f"{i}. {lap}")
+class DualTimerApp(App):
+    CSS_PATH = "style.tcss"
 
 
-def main(stdscr):
-    curses.curs_set(0)
-    stdscr.nodelay(True)
+    def compose(self) -> ComposeResult:
+        yield Header()
 
-    timer1 = Timer()
-    timer2 = Timer()
+        with Horizontal(id="body"):
+            with Vertical(id="timer1-box"):
+                self.timer1_display = Static(id="timer1")
+                self.timer1_laps = Static(id="timer1-laps")
+                yield self.timer1_display
+                yield self.timer1_laps
 
-    while True:
-        stdscr.clear()
+                with Horizontal(id="lap-count"):
+                    self.timer1_lap_count_display = Static(id="timer1-laps-count")
+                    yield self.timer1_lap_count_display
 
-        draw_timer(stdscr, 1, timer1, "Timer 1")
-        draw_timer(stdscr, 12, timer2, "Timer 2")
+            with Vertical(id="timer2-box"):
+                self.timer2_display = Static(id="timer2")
+                self.timer2_laps = Static(id="timer2-laps")
+                yield self.timer2_display
+                yield self.timer2_laps
 
-        stdscr.addstr(22, 2, "Controls:", curses.A_BOLD)
-        stdscr.addstr(23, 4, "1: Start/Stop Timer 1")
-        stdscr.addstr(24, 4, "2: Lap Timer 1")
-        stdscr.addstr(25, 4, "8: Start/Stop Timer 2")
-        stdscr.addstr(26, 4, "9: Lap Timer 2")
-        stdscr.addstr(27, 4, "q: Quit")
+                with Horizontal(id="lap-count"):
+                    self.timer2_lap_count_display = Static(id="timer2-laps-count")
+                    yield self.timer2_lap_count_display
 
-        stdscr.refresh()
 
-        key = stdscr.getch()
 
-        if key == ord('1'):
-            timer1.toggle()
-        elif key == ord('2'):
-            timer1.lap()
-        elif key == ord('8'):
-            timer2.toggle()
-        elif key == ord('9'):
-            timer2.lap()
-        elif key == ord('q'):
-            break
+        with Horizontal(id="controls"):
+            yield Button("T1 Start/Stop", id="t1-toggle")
+            yield Button("T1 Lap", id="t1-lap")
+            yield Button("T2 Start/Stop", id="t2-toggle")
+            yield Button("T2 Lap", id="t2-lap")
 
-        time.sleep(0.1)
+        yield Footer()
+
+
+    def on_mount(self):
+        self.timer1 = Timer()
+        self.timer2 = Timer()
+
+        self.figlet = Figlet(font="starwars")
+
+        self.set_interval(1, self.update_times)
+
+
+    def _ascii_time(self, label: str, value: str) -> str:
+        safe_value = value.replace(":", " ")
+
+        art = self.figlet.renderText(safe_value)
+
+        lines = art.splitlines()
+        max_width = min(60, self.size.width - 10)
+        trimmed = "\n".join(line[:max_width] for line in lines)
+
+        return f"{label}\n{trimmed}"
+
+
+    def update_times(self):
+        self.timer1_display.update(
+            self._ascii_time("Work", self.timer1.get_time())
+        )
+
+        self.timer2_display.update(
+            self._ascii_time("Personal", self.timer2.get_time())
+        )
+
+        self.timer1_laps.update("\n".join(self.timer1.laps[-5:]) or "No laps")
+        self.timer2_laps.update("\n".join(self.timer2.laps[-5:]) or "No laps")
+
+        self.timer1_lap_count_display.update(f'Total: {str(len(self.timer1.laps))}' or "0 laps")
+        self.timer2_lap_count_display.update(f'Total: {str(len(self.timer2.laps))}' or "0 laps")
+
+
+
+    def on_button_pressed(self, event: Button.Pressed):
+        match event.button.id:
+            case "t1-toggle":
+                self.timer1.toggle()
+            case "t1-lap":
+                self.timer1.lap()
+            case "t2-toggle":
+                self.timer2.toggle()
+            case "t2-lap":
+                self.timer2.lap()
 
 
 if __name__ == "__main__":
-    curses.wrapper(main)
-
+    DualTimerApp().run()
