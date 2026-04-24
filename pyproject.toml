@@ -1,0 +1,20 @@
+[project]
+name = "timer-tui"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pyfiglet>=1.0.4",
+    "textual>=8.2.4",
+]
+
+[project.scripts]
+timer-tui = "timer_tui.app:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["timer-tui"]
