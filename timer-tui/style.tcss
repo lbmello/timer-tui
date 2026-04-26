@@ -1,6 +1,5 @@
 Screen {
-    layout: horizontal;
-    align: center middle;
+    layout: vertical;
 
 }
 
@@ -56,4 +55,11 @@ Button {
 
 Footer {
     height: 1;
+}
+
+#nav {
+    dock: top;
+    height: 3;
+    align: left middle;
+    margin-left: 1;
 }

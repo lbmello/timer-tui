@@ -1,7 +1,13 @@
-from timer import timer
-from tui_app import tui_app
+from textual.app import App
+
+from main_screen import MainMenu
+
+class MyApp(App):
+
+    def on_mount(self):
+        self.push_screen(MainMenu())
 
 
 if __name__ == "__main__":
-    app = tui_app()
+    app = MyApp()
     app.run()
