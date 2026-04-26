@@ -1,10 +1,10 @@
-
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, Static, Header, Footer
 from pyfiglet import Figlet
 
 from timer import timer as Timer
+
 
 class tui_app(App):
     CSS_PATH = "style.tcss"
@@ -20,7 +20,9 @@ class tui_app(App):
                 yield self.timer_work_laps
 
                 with Horizontal(id="lap-count"):
-                    self.timer_work_lap_count_display = Static(id="timer_work-laps-count")
+                    self.timer_work_lap_count_display = Static(
+                        id="timer_work-laps-count"
+                    )
                     yield self.timer_work_lap_count_display
 
             with Vertical(id="timer_personal-box"):
@@ -30,7 +32,9 @@ class tui_app(App):
                 yield self.timer_personal_laps
 
                 with Horizontal(id="lap-count"):
-                    self.timer_personal_lap_count_display = Static(id="timer_personal-laps-count")
+                    self.timer_personal_lap_count_display = Static(
+                        id="timer_personal-laps-count"
+                    )
                     yield self.timer_personal_lap_count_display
 
         with Horizontal(id="controls"):
@@ -41,7 +45,6 @@ class tui_app(App):
 
         yield Footer()
 
-
     def on_mount(self):
         self.timer_work = Timer()
         self.timer_personal = Timer()
@@ -50,7 +53,6 @@ class tui_app(App):
         self.theme = "dracula"
 
         self.set_interval(1, self.update_times)
-
 
     def _ascii_time(self, label: str, value: str) -> str:
         safe_value = value.replace(":", " ")
@@ -63,7 +65,6 @@ class tui_app(App):
 
         return f"{label}\n{trimmed}"
 
-
     def update_times(self):
         self.timer_work_display.update(
             self._ascii_time("Work", self.timer_work.get_time())
@@ -75,21 +76,26 @@ class tui_app(App):
 
         self.timer_work_laps.update(
             "\n".join(
-                f"Lap {i+1}: {t} | Elapsed: {t}"
+                f"Lap {i + 1}: {t} | Elapsed: {t}"
                 for i, t in enumerate(self.timer_work.laps)
-            ) or "No laps"
+            )
+            or "No laps"
         )
 
         self.timer_personal_laps.update(
             "\n".join(
-                f"Lap {i+1}: {t} | Elapsed: {t}"
+                f"Lap {i + 1}: {t} | Elapsed: {t}"
                 for i, t in enumerate(self.timer_personal.laps)
-            ) or "No laps"
+            )
+            or "No laps"
         )
 
-        self.timer_work_lap_count_display.update(f'Total: {str(len(self.timer_work.laps))}' or "0 laps")
-        self.timer_personal_lap_count_display.update(f'Total: {str(len(self.timer_personal.laps))}' or "0 laps")
-
+        self.timer_work_lap_count_display.update(
+            f"Total: {str(len(self.timer_work.laps))}" or "0 laps"
+        )
+        self.timer_personal_lap_count_display.update(
+            f"Total: {str(len(self.timer_personal.laps))}" or "0 laps"
+        )
 
     def on_button_pressed(self, event: Button.Pressed):
         match event.button.id:
@@ -101,4 +107,3 @@ class tui_app(App):
                 self.timer_personal.toggle()
             case "t2-lap":
                 self.timer_personal.lap()
-

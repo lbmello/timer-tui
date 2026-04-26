@@ -1,5 +1,5 @@
-
 import time
+
 
 class timer:
     def __init__(self):
@@ -8,7 +8,6 @@ class timer:
         self.elapsed = 0
         self.laps = []
 
-
     def toggle(self):
         if self.running:
             self.elapsed += time.time() - self.start_time
@@ -16,7 +15,6 @@ class timer:
         else:
             self.start_time = time.time()
             self.running = True
-
 
     def lap(self):
         self.laps.append(self.get_time())
@@ -31,4 +29,3 @@ class timer:
         m = (total % 3600) // 60
         s = total % 60
         return f"{h:02}:{m:02}:{s:02}"
-
