@@ -1,12 +1,14 @@
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, Static, Header, Footer
+from textual.screen import Screen
 from pyfiglet import Figlet
+
 
 from timer import timer as Timer
 
 
-class tui_app(App):
+class DualTimerScreen(Screen):
     CSS_PATH = "style.tcss"
 
     def compose(self) -> ComposeResult:
@@ -43,7 +45,11 @@ class tui_app(App):
             yield Button("Personal Start/Stop", id="t2-toggle")
             yield Button("Personal Lap", id="t2-lap")
 
+        with Horizontal(id="nav"):
+            yield Button("← Back to Menu", id="back")
+
         yield Footer()
+
 
     def on_mount(self):
         self.timer_work = Timer()
@@ -51,7 +57,7 @@ class tui_app(App):
 
         self.figlet = Figlet(font="starwars")
         self.theme = "dracula"
-
+        
         self.set_interval(1, self.update_times)
 
     def _ascii_time(self, label: str, value: str) -> str:
@@ -98,6 +104,8 @@ class tui_app(App):
         )
 
     def on_button_pressed(self, event: Button.Pressed):
+        app = self.app
+
         match event.button.id:
             case "t1-toggle":
                 self.timer_work.toggle()
@@ -107,3 +115,5 @@ class tui_app(App):
                 self.timer_personal.toggle()
             case "t2-lap":
                 self.timer_personal.lap()
+            case "back":
+                app.switch_screen(app.main_menu)
