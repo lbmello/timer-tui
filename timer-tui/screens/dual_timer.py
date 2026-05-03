@@ -103,7 +103,7 @@ class DualTimerScreen(Screen):
             f"Total: {str(len(self.timer_personal.laps))}" or "0 laps"
         )
 
-    def on_button_pressed(self, event: Button.Pressed):
+    def on_button_pressed(self, event: Button.Pressed) -> None:
         app = self.app
 
         match event.button.id:
@@ -116,4 +116,4 @@ class DualTimerScreen(Screen):
             case "t2-lap":
                 self.timer_personal.lap()
             case "back":
-                app.switch_screen(app.main_menu)
+                app.switch_screen("main")

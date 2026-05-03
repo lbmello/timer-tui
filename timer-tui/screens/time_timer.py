@@ -25,8 +25,10 @@ class TimeTimerScreen(Screen):
         yield Footer()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        app = self.app
+
         if event.button.id == "back":
-            self.app.pop_screen()
+            app.switch_screen("main")
 
         elif event.button.id == "start-5":
             self.start_timer(5)

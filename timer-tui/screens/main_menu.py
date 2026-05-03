@@ -5,6 +5,9 @@ from textual.containers import Vertical
 
 class MainMenu(Screen):
 
+    def on_mount(self):
+        self.query_one(Button).focus()
+
     def compose(self):
         yield Static("Main Menu", id="title")
 
@@ -17,7 +20,8 @@ class MainMenu(Screen):
 
         match event.button.id:
             case "go-dual":
-                app.switch_screen(app.dual_timer)
+                app.switch_screen("dual")
 
             case "go-time-timer":
-                app.switch_screen(app.time_timer)
+                app.switch_screen("time")
+
