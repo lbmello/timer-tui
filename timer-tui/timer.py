@@ -30,3 +30,9 @@ class timer:
         s = total % 60
         return f"{h:02}:{m:02}:{s:02}"
 
+    def add(self, minutes):
+        self.elapsed += (minutes * 60)
+
+    def remove(self, minutes):
+        self.elapsed -= (minutes * 60)
+

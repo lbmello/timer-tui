@@ -27,6 +27,12 @@ class DualTimerScreen(Screen):
                     )
                     yield self.timer_work_lap_count_display
 
+                with Horizontal(id="controls-work"):
+                    yield Button("Work Start/Stop", id="t1-toggle")
+                    yield Button("Work Lap", id="t1-lap")
+                    yield Button("+15m", id="t1_add_15m")
+                    yield Button("-15m", id="t1_remove_15m")
+
             with Vertical(id="timer_personal-box"):
                 self.timer_personal_display = Static(id="timer_personal")
                 self.timer_personal_laps = Static(id="timer_work-laps")
@@ -39,11 +45,11 @@ class DualTimerScreen(Screen):
                     )
                     yield self.timer_personal_lap_count_display
 
-        with Horizontal(id="controls"):
-            yield Button("Work Start/Stop", id="t1-toggle")
-            yield Button("Work Lap", id="t1-lap")
-            yield Button("Personal Start/Stop", id="t2-toggle")
-            yield Button("Personal Lap", id="t2-lap")
+                with Horizontal(id="controls-personal"):
+                    yield Button("Personal Start/Stop", id="t2-toggle")
+                    yield Button("Personal Lap", id="t2-lap")
+                    yield Button("+15m", id="t2_add_15m")
+                    yield Button("-15m", id="t2_remove_15m")
 
         with Horizontal(id="nav"):
             yield Button("← Back to Menu", id="back")
@@ -115,5 +121,13 @@ class DualTimerScreen(Screen):
                 self.timer_personal.toggle()
             case "t2-lap":
                 self.timer_personal.lap()
+            case "t1_add_15m":
+                self.timer_work.add(15)
+            case "t1_remove_15m":
+                self.timer_work.remove(15)
+            case "t2_add_15m":
+                self.timer_personal.add(15)
+            case "t2_remove_15m":
+                self.timer_personal.remove(15)
             case "back":
                 app.switch_screen("main")
