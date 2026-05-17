@@ -36,3 +36,23 @@ class timer:
     def remove(self, minutes):
         self.elapsed -= (minutes * 60)
 
+    def lap_elapsed(self, laps, index):
+        def to_seconds(t):
+            h, m, s = map(int, t.split(":"))
+            return h * 3600 + m * 60 + s
+
+        def to_time(seconds):
+            h = seconds // 3600
+            m = (seconds % 3600) // 60
+            s = seconds % 60
+            return f"{h:02}:{m:02}:{s:02}"
+
+        current = to_seconds(laps[index])
+
+        if index == 0:
+            elapsed = current
+        else:
+            previous = to_seconds(laps[index - 1])
+            elapsed = current - previous
+
+        return to_time(elapsed)

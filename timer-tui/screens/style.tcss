@@ -5,7 +5,7 @@ Screen {
 
 #body {
     width: auto;
-    height: auto;
+    height: 100;
 }
 
 #timer_work-box, #timer_personal-box {
@@ -51,6 +51,10 @@ Screen {
 
 Button {
     margin: 0 1;
+}
+
+#head {
+    height: 1;
 }
 
 Footer {

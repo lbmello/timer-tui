@@ -12,7 +12,7 @@ class DualTimerScreen(Screen):
     CSS_PATH = "style.tcss"
 
     def compose(self) -> ComposeResult:
-        yield Header()
+        yield Header(id="head")
 
         with Horizontal(id="body"):
             with Vertical(id="timer_work-box"):
@@ -88,15 +88,15 @@ class DualTimerScreen(Screen):
 
         self.timer_work_laps.update(
             "\n".join(
-                f"Lap {i + 1}: {t} | Elapsed: {t}"
-                for i, t in enumerate(self.timer_work.laps)
+                f"Lap {i + 1}: {t} | Elapsed: {self.timer_work.lap_elapsed(self.timer_work.laps, i)}"
+                for i, t in enumerate(self.timer_work.laps[:-1])
             )
             or "No laps"
         )
 
         self.timer_personal_laps.update(
             "\n".join(
-                f"Lap {i + 1}: {t} | Elapsed: {t}"
+                f"Lap {i + 1}: {t} | Elapsed: {i}"
                 for i, t in enumerate(self.timer_personal.laps)
             )
             or "No laps"
